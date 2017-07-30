@@ -1,6 +1,8 @@
 # -*-coding:utf-8-*-
 
 from scrapy import log
+import yaml
+from redis import StrictRedis
 
 """避免被ban策略之一：使用useragent池。
 
@@ -9,6 +11,21 @@ from scrapy import log
 
 import random
 from scrapy.contrib.downloadermiddleware.useragent import UserAgentMiddleware
+
+LOCAL_CONFIG_YAML = '/etc/hq-proxies.yml'
+with open(LOCAL_CONFIG_YAML, 'r') as f:
+    LOCAL_CONFIG = yaml.load(f)
+# redis keys
+PROXY_COUNT = LOCAL_CONFIG['PROXY_COUNT']
+PROXY_SET = LOCAL_CONFIG['PROXY_SET']
+PROXY_PROTECT = LOCAL_CONFIG['PROXY_PROTECT']
+PROXY_REFRESH = LOCAL_CONFIG['PROXY_REFRESH']
+redis_db = StrictRedis(
+    host=LOCAL_CONFIG['REDIS_HOST'], 
+    port=LOCAL_CONFIG['REDIS_PORT'], 
+    password=LOCAL_CONFIG['REDIS_PASSWORD'],
+    db=LOCAL_CONFIG['REDIS_DB']
+)
 
 class RotateUserAgentMiddleware(UserAgentMiddleware):
 
@@ -22,6 +39,12 @@ class RotateUserAgentMiddleware(UserAgentMiddleware):
             print ("********Current UserAgent:" + ua + "************")
             log.msg('Current UserAgent:'+ua,log.INFO)
             request.headers.setdefault('User-Agent', ua)
+        
+        proxy = redis_db.srandmember(PROXY_SET)
+        proxy = proxy.decode('utf-8')
+        # proxy = redis_db.sismember(PROXY_SET, prutf-8oxy)
+        print('~~~~~~~~~~~~使用代理[%s]访问[%s]' % (proxy, request.url))
+        request.meta['proxy'] = proxy
 
     #the default user_agent_list composes chrome,I E,firefox,Mozilla,opera,netscape
     #for more user agent strings,you can find it in http://www.useragentstring.com/pages/useragentstring.php

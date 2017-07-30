@@ -12,7 +12,8 @@
             "cwd": "${workspaceRoot}/webscrapy",
             "args": [
                 "crawl",
-                "kejilie"
+                "sitemap"
+                // "kejilie"
                 // "specs",
                 // "-o",
                 // "bikes.json"
