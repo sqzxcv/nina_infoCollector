@@ -14,6 +14,7 @@ class NewsSpiderItem(scrapy.Item):
 	time = scrapy.Field()
 	content = scrapy.Field()
 	url = scrapy.Field()
+	audio = scrapy.Field()
 
 class TitleSpiderItem(scrapy.Item):
 	title = scrapy.Field()

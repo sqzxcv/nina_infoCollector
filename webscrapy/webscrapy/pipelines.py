@@ -46,10 +46,10 @@ class NewsSpiderPipeline(object):
                            passwd='Anhuiqiang851', db='nina', charset='utf8')
         cursor = conn.cursor()
         try:
-            sqltemp = Template("insert into document(url,content,news_time,contentHtml,title,collect_time) values('$url','$content',$news_time,'$contentHtml','$title',$collect_time) ON DUPLICATE KEY UPDATE content= '$content', news_time=$news_time,contentHtml='$contentHtml',title='$title',collect_time=$collect_time")
+            sqltemp = Template("insert into document(url,content,news_time,contentHtml,title,collect_time,audio) values('$url','$content',$news_time,'$contentHtml','$title',$collect_time,'$audio') ON DUPLICATE KEY UPDATE content= '$content', news_time=$news_time,contentHtml='$contentHtml',title='$title',collect_time=$collect_time, audio = '$audio'")
             # print "ceshi biaoti----title" + itemtitle
             sql = sqltemp.substitute(title=item["title"], url=item["url"], content=item["content"], contentHtml=item["content"],
-                                     news_time=self.convertTimeFromString(item["time"]), collect_time=int(time.time()))
+                                     news_time=self.convertTimeFromString(item["time"]), audio = item['audio'], collect_time=int(time.time()))
             # print "~~~~~~~~~~~~~~sql=" + sql
             cursor.execute(sql)
             print ("插入新闻:{0}".format(item['title']))

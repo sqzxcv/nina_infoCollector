@@ -12,8 +12,8 @@
             "cwd": "${workspaceRoot}/webscrapy",
             "args": [
                 "crawl",
-                "sitemap"
-                // "kejilie"
+                // "kejilieChannels"
+                "kejilieChannelsContent"
                 // "specs",
                 // "-o",
                 // "bikes.json"
