@@ -24,4 +24,4 @@ class KejijieChannelsSpider(CrawlSpider):
 
     def parseChannel(self, response):
         print("-----------------kejiliechannels url:" + response.url)
-        self.redis_db.lpush("kejiliechannels", response.url);
+        self.redis_db.sadd("kejiliechannels", response.url)

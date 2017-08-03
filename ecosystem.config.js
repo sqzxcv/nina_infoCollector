@@ -7,13 +7,13 @@ module.exports = {
 
     // First application
     {
-      name: "DynamicProxyIP",
+      name: "nina_infoCollector",
       max_memory_restart: "1024M",
       log_date_format: "YYYY-MM-DD HH:mm:ss SSS",
       script: "start.py",
-      out_file: "/var/log/DynamicProxyIP/app.log",
-      error_file: "/var/log/DynamicProxyIP/err.log",
-      port: "6800",
+      out_file: "/var/log/nina_infoCollector/app.log",
+      error_file: "/var/log/nina_infoCollector/err.log",
+      port: "0",
       env: {
         COMMON_VARIABLE: 'true'
       },
@@ -32,8 +32,8 @@ module.exports = {
       user: 'root',
       host: '116.62.195.14',
       ref: 'origin/master',
-      repo: 'git@github.com:sqzxcv/DynamicProxyIP.git',
-      path: '/var/www/DynamicProxyIP',
+      repo: 'git@github.com:sqzxcv/nina_infoCollector.git',
+      path: '/var/www/nina_infoCollector',
       // "post-deploy": 'git pull && workon scrapyd_py3.6.1 && npm install && pm2 reload scrapyd -x --interpreter /root/Envs/scrapyd_py3.6.1/bin/python'
       "post-deploy": './start.sh'
     }
