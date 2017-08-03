@@ -12,6 +12,7 @@ from urllib import parse
 from qiniu import Auth, put_file, etag, urlsafe_base64_encode
 import qiniu.config
 import os
+import shutil
 
 access_token = ""
 expires_date = 0
@@ -85,7 +86,7 @@ def text2speech(text):
         print ("音频文件生成成功")
         uploadPath = uploadspeech(resultPath)
         if uploadPath != None:
-            os.rmdir(dir)
+            shutil.rmtree(dir)
     return uploadPath
 
 uploadspeechRetryCount = 0
