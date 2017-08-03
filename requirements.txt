@@ -1,3 +1,4 @@
+APScheduler==3.3.1
 asn1crypto==0.22.0
 astroid==1.5.3
 attrs==17.2.0
@@ -25,14 +26,19 @@ pydub==0.19.0
 pylint==1.7.2
 PyMySQL==0.7.11
 pyOpenSSL==17.2.0
+pytz==2017.2
 PyYAML==3.12
+qiniu==7.1.4
 queuelib==1.4.2
 redis==2.10.5
 requests==2.18.2
 Scrapy==1.4.0
+scrapyd==1.2.0
+scrapyd-client==1.1.0
 service-identity==17.0.0
 six==1.10.0
 Twisted==17.5.0
+tzlocal==1.4
 urllib3==1.22
 w3lib==1.17.0
 wrapt==1.10.10
