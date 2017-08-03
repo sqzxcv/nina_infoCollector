@@ -17,7 +17,7 @@ class KejijieSpider(CrawlSpider):
         password=Redis2Info['pwd'],
         db=Redis2Info['db']
     )
-    urllist = db.lrange("kejiliechannels", 0, db.llen("kejiliechannels"))
+    urllist = db.smembers("kejiliechannels")
     start_urls = []
     for url in urllist:
         start_urls.append(url.decode('utf-8'))

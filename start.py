@@ -2,32 +2,29 @@ from apscheduler.schedulers.blocking import BlockingScheduler
 from redis import StrictRedis
 from webscrapy.webscrapy.webscrapySettings import Redis2Info
 import json
-
-db = StrictRedis(
-    host=Redis2Info['host'],
-    port=Redis2Info['port'],
-    password=Redis2Info['pwd'],
-    db=Redis2Info['db']
-)
-channelsUrls = []
-
-fileread =  open("urllist.txt", 'r')
-jsonstr = fileread.read()
-channelsUrls = json.loads(jsonstr)
-# db.sadd("kejiliechannels", channelsUrls)
-for url in channelsUrls:
-    db.sadd("kejiliechannels", url)
+import requests
     
 
 
 
 
-# def job():
-#     # print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-#     pass
+def fetchContentJob():
+    # print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    print ("++++++++++++++++++++启动爬虫kejilieChannelsContent爬去内容")
+    res = requests.post("http://localhost:6800/schedule.json?spider=kejilieChannelsContent&&project=webscrapy")
+    print ("++++++++++++++++++++" + res.text)
+
+def fetchChannelsjob():
+    print ('++++++++++++++++++++启动爬虫kejilieChannels爬取最新频道')
+    res = requests.post("http://localhost:6800/schedule.json?project=webscrapy&&spider=kejilieChannels")
+    print ("++++++++++++++++++++" + res.text)
 
 
-# # BlockingScheduler
-# scheduler = BlockingScheduler()
-# scheduler.add_job(job, 'interval', hour=1)
-# scheduler.start()
+# BlockingScheduler
+scheduler = BlockingScheduler()
+fetchContentJob()
+scheduler.add_job(fetchContentJob, 'interval', hours=1)
+scheduler.add_job(fetchChannelsjob, 'interval', days=7)
+scheduler.start()
+
+

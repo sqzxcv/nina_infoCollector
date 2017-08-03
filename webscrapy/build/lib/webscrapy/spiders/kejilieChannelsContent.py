@@ -20,7 +20,7 @@ class kejilieChannelsContentSpider(scrapy.Spider):
         password=Redis2Info['pwd'],
         db=Redis2Info['db']
     )
-    urllist = db.lrange("kejiliechannels", 0, db.llen("kejiliechannels"))
+    urllist = db.smembers("kejiliechannels")
     start_urls = ['http://www.kejilie.com']
     channelsUrls = []
     for url in urllist:

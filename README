@@ -11,3 +11,5 @@ hope this example can help
 
 
 pm2 start scrapyd --interpreter /root/Envs/scrapyd_py3.6.1/bin/python --watch --name=scrapyd
+
+scrapyd-deploy <target> -p <project>

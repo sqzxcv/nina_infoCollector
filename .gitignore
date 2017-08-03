@@ -8,3 +8,8 @@ data/orinews
 data/inversedata
 testdata/
 ttsdata/
+build/*
+eggs/
+logs/
+dbs/*
+build/lib/

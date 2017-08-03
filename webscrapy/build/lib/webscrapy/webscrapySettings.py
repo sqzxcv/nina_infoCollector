@@ -6,4 +6,4 @@ Redis2Info = {
     'db': 2
 }
 
-fetchLength = 5
+fetchLength = 3
