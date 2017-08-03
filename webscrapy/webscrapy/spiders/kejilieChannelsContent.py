@@ -50,7 +50,7 @@ class kejilieChannelsContentSpider(scrapy.Spider):
         """
         print("-----------------page url:" + response.url)
         res = requests.get(
-            "http://localhost:8082/presedocument?url=" + response.url)
+            "http://localhost:3082/presedocument?url=" + response.url)
         dict = res.json()
         item = NewsSpiderItem()
         item["time"] = dict['news_times']
