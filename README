@@ -1,0 +1,13 @@
+In my case I use scrapyd in my project. The original command is:
+
+scrapyd --pidfile /var/log/scrapyd/twistd.pid -l /var/log/scrapyd/logs/scrapyd.log
+
+and the pm2 version is:
+
+pm2 start scrapyd --interpreter python --watch --name=scrapyd -- --pidfile "/var/log/scrapyd/twistd.pid" -l "/var/log/scrapyd/logs/scrapyd.log"
+
+hope this example can help
+
+
+
+pm2 start scrapyd --interpreter /root/Envs/scrapyd_py3.6.1/bin/python --watch --name=scrapyd
