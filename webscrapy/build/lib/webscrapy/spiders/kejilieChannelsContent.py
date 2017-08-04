@@ -57,6 +57,9 @@ class kejilieChannelsContentSpider(scrapy.Spider):
         item["title"] = dict["title"]
         item["content"] = dict["content"]
         item["url"] = response.url
-        item['audio'] = text2speech(item['content'])
+        try:
+            item['audio'] = text2speech(item['content'])
+        except:
+            print("生成音频失败")
         print("---------title===" + dict["title"] + "======audio====" + item['audio'])
         return item
