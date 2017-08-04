@@ -59,6 +59,6 @@ async def readContentWithURL(request):
         return response.json(info);
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=3083)
+    app.run(host='0.0.0.0', port=3084)
 
 
