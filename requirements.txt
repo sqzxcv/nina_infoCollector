@@ -1,3 +1,4 @@
+aiofiles==0.3.1
 APScheduler==3.3.1
 asn1crypto==0.22.0
 astroid==1.5.3
@@ -10,6 +11,7 @@ constantly==15.1.0
 cryptography==2.0.2
 cssselect==1.0.1
 ez-setup==0.9
+httptools==0.0.9
 hyperlink==17.3.0
 idna==2.5
 incremental==17.5.0
@@ -32,6 +34,7 @@ qiniu==7.1.4
 queuelib==1.4.2
 redis==2.10.5
 requests==2.18.2
+sanic==0.6.0
 Scrapy==1.4.0
 scrapyd==1.2.0
 scrapyd-client==1.1.0
@@ -39,7 +42,10 @@ service-identity==17.0.0
 six==1.10.0
 Twisted==17.5.0
 tzlocal==1.4
+ujson==1.35
 urllib3==1.22
+uvloop==0.8.0
 w3lib==1.17.0
+websockets==3.3
 wrapt==1.10.10
 zope.interface==4.4.2
