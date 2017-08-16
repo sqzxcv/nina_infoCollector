@@ -50,7 +50,7 @@ def text2speech(text):
             access_token + "&ctp=1&cuid=aaaaaaaaaaaa&tex="
         # silenceAudio = AudioSegment.silent(duration=10000)
         song = None
-        dir = "./ttsdata/"
+        dir = "./ttsdata/ttsdata" + str(int(time.time() * 100000000000000)) + "/"
         if os.path.isdir(dir) == False:
             os.mkdir(dir)
         textfilepath = dir + str(int(time.time()))
@@ -81,7 +81,7 @@ def text2speech(text):
                 return None
             print ("生成 MP3文件:第" + str(i) + "碎片:" + parse.unquote(sbtext))
             i += 1
-        resultPath = "./ttsdata/res_" + str(int(time.time())) + ".mp3"
+        resultPath = dir + "/res_" + str(int(time.time())) + ".mp3"
         song.export(resultPath, format="mp3")
         print ("音频文件生成成功")
         uploadPath = uploadspeech(resultPath)

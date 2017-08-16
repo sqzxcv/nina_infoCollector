@@ -42,8 +42,8 @@ class NewsSpiderPipeline(object):
         pass
 
     def saveItem2db(self, item):
-        conn = mdb.connect(host='127.0.0.1', port=3306, user='root',
-                           passwd='Anhuiqiang85!', db='nina', charset='utf8')
+        conn = mdb.connect(host='localhost', port=3306, user='root',
+                           passwd='Anhuiqiang85!', db='Nina', charset='utf8')
         cursor = conn.cursor()
         try:
             sqltemp = Template("insert into document(url,content,news_time,contentHtml,title,collect_time,audio) values('$url','$content',$news_time,'$contentHtml','$title',$collect_time,'$audio') ON DUPLICATE KEY UPDATE content= '$content', news_time=$news_time,contentHtml='$contentHtml',title='$title',collect_time=$collect_time, audio = '$audio'")
