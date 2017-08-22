@@ -8,5 +8,3 @@ Redis2Info = {
 
 fetchLength = 3
 
-# 爬虫运行多长时间后自动退出
-scrapyDuration = 1 * 60

@@ -1,4 +1,4 @@
-from apscheduler.schedulers.blocking import BlockingScheduler
+from apscheduler.schedulers.background import BackgroundScheduler
 from logger import *
 from twisted.internet import reactor
 import scrapy
@@ -20,7 +20,7 @@ def fetchContentJob():
     configure_logging(
         {'LOG_FORMAT': '[%(levelname)s]  %(asctime)s %(filename)s[%(lineno)s]    %(message)s'})
     runner = CrawlerRunner()
-    d = runner.crawl(kejilieChannelsContentSpider, CLOSESPIDER_TIMEOUT=10)
+    d = runner.crawl(kejilieChannelsContentSpider)
     d.addBoth(lambda _: reactor.stop())
     reactor.run()  # the script will block here until the crawling is finished
 
@@ -36,12 +36,12 @@ def main():
     """
     main
     """
+    scheduler = BackgroundScheduler()
+    scheduler.add_job(fetchContentJob, 'interval', hours=1)
+    scheduler.start()
     fetchContentJob()
 
 # BlockingScheduler
-# scheduler = BlockingScheduler()
-
-# scheduler.add_job(fetchContentJob, 'interval', hours=1)
 # scheduler.add_job(fetchChannelsjob, 'interval', days=7)
 # scheduler.start()
 

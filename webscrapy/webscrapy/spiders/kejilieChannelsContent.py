@@ -54,7 +54,7 @@ class kejilieChannelsContentSpider(scrapy.Spider):
         """
         提取网页正文等信息
         """
-        if self.createtimer + wbsettings.scrapyDuration < time.time():
+        if self.createtimer + config.info["scrapyDuration"] < time.time():
             raise CloseSpider("spider time out")  # time out 发送异常 关闭爬虫
             return None
         info("-----------------page url:" + response.url)

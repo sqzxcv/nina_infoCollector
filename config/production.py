@@ -14,5 +14,6 @@ class production(object):
         production config
         """
         return {
-            "parsedocument": "http://localhost:3082/presedocument?url="
+            "parsedocument": "http://localhost:3082/presedocument?url=",
+            "scrapyDuration": 40 * 60
         }

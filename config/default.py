@@ -14,5 +14,6 @@ class default(object):
         default config
         """
         return {
-            "parsedocument": "http://localhost:8082/presedocument?url="
+            "parsedocument": "http://localhost:8082/presedocument?url=",
+            "scrapyDuration": 1 * 60  # 爬虫运行多长时间后自动退出
         }
