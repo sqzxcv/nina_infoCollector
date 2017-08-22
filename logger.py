@@ -21,14 +21,14 @@ dictLogConfig = {
         #     "maxBytes":1024*1024*2,
         #     "backupCount":40
         # },
-        'streamHandler':{
-            "class":"logging.StreamHandler",
-            "formatter":"myFormatter"
+        'streamHandler': {
+            "class": "logging.StreamHandler",
+            "formatter": "myFormatter"
         }
     },
     "loggers": {
         "App": {
-            "handlers":["streamHandler"],# ["fileHandler", "streamHandler"],
+            "handlers": ["streamHandler"],  # ["fileHandler", "streamHandler"],
             "level": "INFO",
         }
     },
@@ -40,14 +40,17 @@ dictLogConfig = {
     }
 }
 
+
 def singleton(cls):
     instance = cls()
     instance.__call__ = lambda: instance
     return instance
 
+
 @singleton
 class NinaLogger(object):
     logger = None
+
     def __init__(self):
         logging.config.dictConfig(dictLogConfig)
         self.logger = logging.getLogger("App")
@@ -58,6 +61,7 @@ info = NinaLogger.logger.info
 warning = NinaLogger.logger.warn
 error = NinaLogger.logger.error
 critical = NinaLogger.logger.critical
+
 
 # import logging
 # from logging import *

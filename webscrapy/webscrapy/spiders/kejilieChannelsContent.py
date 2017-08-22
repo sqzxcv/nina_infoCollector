@@ -2,18 +2,23 @@
 # encoding=utf-8
 
 import scrapy
-from webscrapy.items import NewsSpiderItem
-from webscrapy.webscrapySettings import Redis2Info
-from webscrapy import webscrapySettings as wbsettings
-from webscrapy.text2speech import text2speech
+from scrapy.exceptions import CloseSpider
+from webscrapy.webscrapy.items import NewsSpiderItem
+from webscrapy.webscrapy.webscrapySettings import Redis2Info
+from webscrapy.webscrapy import webscrapySettings as wbsettings
+from webscrapy.webscrapy.text2speech import text2speech
 from redis import StrictRedis
 import requests
 from urllib.parse import urlparse
+from logger import info
+from config import config
+import time
 
 
 class kejilieChannelsContentSpider(scrapy.Spider):
 
     name = "kejilieChannelsContent"
+    createtimer = time.time()
     db = StrictRedis(
         host=Redis2Info['host'],
         port=Redis2Info['port'],
@@ -28,7 +33,8 @@ class kejilieChannelsContentSpider(scrapy.Spider):
     allowed_domains = ['www.kejilie.com']
 
     def parse(self, response):
-
+        """
+        """
         for url in self.channelsUrls:
             for index in range(0, wbsettings.fetchLength):
                 pageurl = url[:-5] + "/" + str(index) + ".html"
@@ -48,9 +54,12 @@ class kejilieChannelsContentSpider(scrapy.Spider):
         """
         提取网页正文等信息
         """
-        print("-----------------page url:" + response.url)
+        if self.createtimer + wbsettings.scrapyDuration < time.time():
+            raise CloseSpider("spider time out")  # time out 发送异常 关闭爬虫
+            return None
+        info("-----------------page url:" + response.url)
         res = requests.get(
-            "http://localhost:3082/presedocument?url=" + response.url)
+            config.info['parsedocument'] + response.url)
         dict = res.json()
         item = NewsSpiderItem()
         item["time"] = dict['news_times']
@@ -60,6 +69,9 @@ class kejilieChannelsContentSpider(scrapy.Spider):
         try:
             item['audio'] = text2speech(item['content'])
         except:
-            print("生成音频失败")
-        print("---------title===" + dict["title"] + "======audio====" + item['audio'])
+            import traceback
+            traceback.print_exc()
+            info("生成音频失败")
+        info("---------title===" + dict["title"] + "======audio====" +
+             item['audio'])
         return item

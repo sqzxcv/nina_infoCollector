@@ -13,19 +13,21 @@ from qiniu import Auth, put_file, etag, urlsafe_base64_encode
 import qiniu.config
 import os
 import shutil
+from logger import *
 
 access_token = ""
 expires_date = 0
 qiniuAuth = ""
+
 
 def text2speech(text):
     """
      return: 返回 通过text 转换成 的mp3音频文件路径,如果转换失败,返回 None
     """
     # re.split(r'[;,\s]\s*', line)
-    #采用捕获分组,在分割的结果集合中包含匹配结果,如果不需要匹配结果可以用数据集:r'[.?!,;。？！，、；]'
+    # 采用捕获分组,在分割的结果集合中包含匹配结果,如果不需要匹配结果可以用数据集:r'[.?!,;。？！，、；]'
     splitArr = re.split(r'(\.|\?|!|,|;|。|？|！|，|、|；)', text)
-    # print splitArr[0]
+    # info splitArr[0]
     textArr = []
     subtext = ""
     for substr in splitArr:
@@ -44,17 +46,18 @@ def text2speech(text):
     access_token = login()
 
     if len(access_token) == 0:
-        print ("百度语音 API token 为空")
+        info("百度语音 API token 为空")
     else:
         ttsurl = "http://tsn.baidu.com/text2audio?lan=zh&tok=" + \
             access_token + "&ctp=1&cuid=aaaaaaaaaaaa&tex="
         # silenceAudio = AudioSegment.silent(duration=10000)
         song = None
-        dir = "./ttsdata/ttsdata" + str(int(time.time() * 100000000000000)) + "/"
+        dir = os.getcwd() + "/ttsdata/ttsdata" + \
+            str(int(time.time() * 100000000000000)) + "/"
         if os.path.isdir(dir) == False:
             os.mkdir(dir)
         textfilepath = dir + str(int(time.time()))
-        i = 0;
+        i = 0
         for sbtext in textArr:
             url = ttsurl + sbtext
             res = requests.get(url)
@@ -77,22 +80,25 @@ def text2speech(text):
                     song = songtmp
                 mp3fileobj.close()
             else:
-                print("文本<"+ sbtext + ">转换音频失败,错误原因:" + res.text())
+                info("文本<" + sbtext + ">转换音频失败,错误原因:" + res.text())
                 return None
-            print ("生成 MP3文件:第" + str(i) + "碎片:" + parse.unquote(sbtext))
+            info("生成 MP3文件:第" + str(i) + "碎片:" + parse.unquote(sbtext))
             i += 1
         resultPath = dir + "/res_" + str(int(time.time())) + ".mp3"
         song.export(resultPath, format="mp3")
-        print ("音频文件生成成功")
+        info("音频文件生成成功")
         uploadPath = uploadspeech(resultPath)
         if uploadPath != None:
             shutil.rmtree(dir)
     return uploadPath
 
+
 uploadspeechRetryCount = 0
+
+
 def uploadspeech(localpath):
     """
-    upload file to qiniu, if upload failed, it will retry 3 times. 
+    upload file to qiniu, if upload failed, it will retry 3 times.
     if upload still failed after retry, it return "None"
     """
     access_key = '_D2Iavhr-DRKHHhW0BTT7-liQ2jO-1cC_lqKn0eF'
@@ -103,18 +109,19 @@ def uploadspeech(localpath):
     bucket_name = 'pipixia'
     key = "audio_" + str(int(time.time())) + ".mp3"
     uptoken = qiniuAuth.upload_token(bucket_name, key, 700000)
-    ret, info = put_file(uptoken, key, localpath);
+    ret, info = put_file(uptoken, key, localpath)
     global uploadspeechRetryCount
     if ret == None:
-        print (info)
+        info(info)
         if uploadspeechRetryCount < 4:
             uploadspeechRetryCount += 1
-            return uploadspeech (localpath)
+            return uploadspeech(localpath)
         else:
             return None
     else:
         uploadspeechRetryCount = 0
         return "http://oty38yumz.bkt.clouddn.com/" + key
+
 
 def login():
     """
@@ -132,7 +139,9 @@ def login():
         expires_date = int(time.time()) + res["expires_in"] - 1000
         return access_token
     except:
-        print ("获取百度 tts token 失败:" + resStr.text())
+        import traceback
+        traceback.print_exc()
+        info("获取百度 tts token 失败:" + resStr.text())
         access_token = ""
         expires_date = 0
         return ""
@@ -142,7 +151,7 @@ def login():
 # uploadspeech("/Users/shengqiang/Documents/Codes/nina_infoCollector/ttsdata/res_1501490854.mp3")
 
 
-# print ("===============mp3 file:" + tts)
+# info ("===============mp3 file:" + tts)
 # song1 = AudioSegment.from_mp3(enPath)
 # song2 = AudioSegment.from_mp3(cnPath)
 

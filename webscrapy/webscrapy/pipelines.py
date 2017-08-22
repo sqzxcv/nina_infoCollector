@@ -14,6 +14,7 @@ import sys
 from string import Template
 import pymysql as mdb
 import time
+from logger import *
 # reload(sys)
 # sys.path.append("..")
 # import tools.Global as Global
@@ -52,7 +53,7 @@ class NewsSpiderPipeline(object):
                                      news_time=self.convertTimeFromString(item["time"]), audio = item['audio'], collect_time=int(time.time()))
             # print "~~~~~~~~~~~~~~sql=" + sql
             cursor.execute(sql)
-            print ("插入新闻:{0}".format(item['title']))
+            info ("插入新闻:{0}".format(item['title']))
             conn.commit()
         except:
             import traceback

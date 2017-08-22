@@ -13,3 +13,4 @@ eggs/
 logs/
 dbs/*
 build/lib/
+build

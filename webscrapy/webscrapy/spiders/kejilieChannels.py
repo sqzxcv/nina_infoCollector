@@ -1,8 +1,9 @@
 import requests
 from scrapy.spiders import CrawlSpider, Rule
 from scrapy.linkextractors.lxmlhtml import LxmlLinkExtractor
-from webscrapy.webscrapySettings import Redis2Info
+from webscrapy.webscrapy.webscrapySettings import Redis2Info
 from redis import StrictRedis
+from logger  import *
 
 
 class KejijieChannelsSpider(CrawlSpider):
@@ -23,5 +24,5 @@ class KejijieChannelsSpider(CrawlSpider):
              )
 
     def parseChannel(self, response):
-        print("-----------------kejiliechannels url:" + response.url)
+        info("-----------------kejiliechannels url:" + response.url)
         self.redis_db.sadd("kejiliechannels", response.url)
