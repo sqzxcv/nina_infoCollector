@@ -1,13 +1,13 @@
 from apscheduler.schedulers.blocking import BlockingScheduler
-from redis import StrictRedis
-from webscrapy.webscrapy.webscrapySettings import Redis2Info
-import json
-import requests
-from sanic import Sanic
-from sanic.response import text
-from sanic import response
-from scrapy.log import msg
-from webscrapy.webscrapy.text2speech import text2speech
+# from redis import StrictRedis
+# from webscrapy.webscrapy.webscrapySettings import Redis2Info
+# import json
+# import requests
+# from sanic import Sanic
+# from sanic.response import text
+# from sanic import response
+# from webscrapy.webscrapy.text2speech import text2speech
+from logger import *
 
 def fetchContentJob():
     # print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
@@ -20,6 +20,9 @@ def fetchChannelsjob():
     res = requests.post("http://localhost:6800/schedule.json?project=webscrapy&&spider=kejilieChannels")
     print ("++++++++++++++++++++" + res.text)
 
+# NinaLogger()
+LogPath = "test"
+info("this is test")
 
 BlockingScheduler
 scheduler = BlockingScheduler()
