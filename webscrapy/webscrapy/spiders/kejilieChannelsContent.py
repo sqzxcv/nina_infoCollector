@@ -4,8 +4,6 @@
 import scrapy
 from scrapy.exceptions import CloseSpider
 from webscrapy.webscrapy.items import NewsSpiderItem
-from webscrapy.webscrapy.webscrapySettings import Redis2Info
-from webscrapy.webscrapy import webscrapySettings as wbsettings
 from webscrapy.webscrapy.text2speech import text2speech
 from redis import StrictRedis
 import requests
@@ -19,6 +17,7 @@ class kejilieChannelsContentSpider(scrapy.Spider):
 
     name = "kejilieChannelsContent"
     createtimer = time.time()
+    Redis2Info = config.info["Redis2Info"]
     db = StrictRedis(
         host=Redis2Info['host'],
         port=Redis2Info['port'],
@@ -36,7 +35,7 @@ class kejilieChannelsContentSpider(scrapy.Spider):
         """
         """
         for url in self.channelsUrls:
-            for index in range(0, wbsettings.fetchLength):
+            for index in range(0, config.info["fetchLength"]):
                 pageurl = url[:-5] + "/" + str(index) + ".html"
                 yield scrapy.Request(pageurl, self.parseList)
 

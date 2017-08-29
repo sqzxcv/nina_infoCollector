@@ -11,6 +11,7 @@ module.exports = {
       max_memory_restart: "1024M",
       log_date_format: "YYYY-MM-DD HH:mm:ss SSS",
       script: "start.py",
+      args:"production",
       out_file: "/var/log/nina_infoCollector/app.log",
       error_file: "/var/log/nina_infoCollector/err.log",
       port: "0",

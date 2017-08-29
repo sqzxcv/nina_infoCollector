@@ -15,6 +15,7 @@ from string import Template
 import pymysql as mdb
 import time
 from logger import *
+from config import config
 # reload(sys)
 # sys.path.append("..")
 # import tools.Global as Global
@@ -23,6 +24,7 @@ from logger import *
 class NewsSpiderPipeline(object):
     lock = threading.Lock()
     # file = open(Global.content_dir, 'a')
+    mysql = config.info["mysql"]
 
     def __init__(self):
         pass
@@ -43,17 +45,25 @@ class NewsSpiderPipeline(object):
         pass
 
     def saveItem2db(self, item):
-        conn = mdb.connect(host='localhost', port=3306, user='root',
-                           passwd='Anhuiqiang85!', db='Nina', charset='utf8')
+        conn = mdb.connect(host=self.mysql["host"], port=self.mysql["port"],
+                           user=self.mysql["user"], passwd=self.mysql["pwd"],
+                           db=self.mysql["db"], charset='utf8')
         cursor = conn.cursor()
         try:
-            sqltemp = Template("insert into document(url,content,news_time,contentHtml,title,collect_time,audio) values('$url','$content',$news_time,'$contentHtml','$title',$collect_time,'$audio') ON DUPLICATE KEY UPDATE content= '$content', news_time=$news_time,contentHtml='$contentHtml',title='$title',collect_time=$collect_time, audio = '$audio'")
+            longStr = "insert into document(url,content,news_time,contentHtml,title,collect_time,audio) values('$url','$content',$news_time,'$contentHtml','$title',$collect_time,'$audio') ON DUPLICATE KEY UPDATE content= '$content', news_time=$news_time,contentHtml='$contentHtml',title='$title',collect_time=$collect_time, audio = '$audio'"
+            sqltemp = Template(longStr)
             # print "ceshi biaoti----title" + itemtitle
-            sql = sqltemp.substitute(title=item["title"], url=item["url"], content=item["content"], contentHtml=item["content"],
-                                     news_time=self.convertTimeFromString(item["time"]), audio = item['audio'], collect_time=int(time.time()))
+            sql = sqltemp.substitute(title=item["title"],
+                                     url=item["url"],
+                                     content=item["content"],
+                                     contentHtml=item["content"],
+                                     news_time=self.convertTimeFromString(
+                                         item["time"]),
+                                     audio=item['audio'],
+                                     collect_time=int(time.time()))
             # print "~~~~~~~~~~~~~~sql=" + sql
             cursor.execute(sql)
-            info ("插入新闻:{0}".format(item['title']))
+            info("插入新闻:{0}".format(item['title']))
             conn.commit()
         except:
             import traceback
@@ -80,5 +90,3 @@ class NewsSpiderPipeline(object):
         elif len(timestr) <= 19:
             frmat = "%Y-%m-%d %H:%M:%S"
         return time.mktime(time.strptime(timestr, frmat))
-
-

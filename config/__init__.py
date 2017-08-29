@@ -6,7 +6,6 @@ import sys
 from . import default
 from . import dev
 from . import production
-from logger import info
 
 
 def singleton(cls):
@@ -26,11 +25,9 @@ class config(object):
         init
         """
         self._config = default.default.config()
-        if len(sys.argv) > 1 and sys.argv[1] == "production":
+        if self.isProduction_ENV:
             self._config = self.mergeDict(default.default.config(),
                                           production.production.config())
-            info("传入参数" + sys.argv[1])
-            info(sys.argv)
         else:
             self._config = self.mergeDict(default.default.config(),
                                           dev.develop.config())
@@ -38,6 +35,13 @@ class config(object):
     @property
     def info(self):
         return self._config
+
+    @property
+    def isProduction_ENV(self):
+        if len(sys.argv) > 1 and sys.argv[1] == "production":
+            return True
+        else:
+            return False
 
     def mergeDict(self, dict1, dict2):
         """

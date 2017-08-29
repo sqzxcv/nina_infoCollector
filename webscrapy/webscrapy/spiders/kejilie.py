@@ -4,13 +4,16 @@
 import requests
 from scrapy.spiders import CrawlSpider, Rule
 from scrapy.linkextractors.lxmlhtml import LxmlLinkExtractor as SgmlLinkExtractor
-from webscrapy.items import NewsSpiderItem
-from webscrapy.webscrapySettings import Redis2Info
+from webscrapy.webscrapy.items import NewsSpiderItem
 from redis import StrictRedis
+
+from logger import info
+from config import config
 
 
 class KejijieSpider(CrawlSpider):
 
+    Redis2Info = config.info["Redis2Info"]
     db = StrictRedis(
         host=Redis2Info['host'],
         port=Redis2Info['port'],
@@ -21,7 +24,7 @@ class KejijieSpider(CrawlSpider):
     start_urls = []
     for url in urllist:
         start_urls.append(url.decode('utf-8'))
-        
+
     # start_urls = ['http://www.kejilie.com', "http://www.kejilie.com/channelsubscribe.html"]
     name = 'kejilie'
     allowed_domains = ['www.kejilie.com']
@@ -31,7 +34,7 @@ class KejijieSpider(CrawlSpider):
     def parsepage(self, response):
         print("-----------------page url:" + response.url)
         urlparse = "http://localhost:8082/presedocument?url=" + response.url
-        print("------urlparse:"+urlparse)
+        print("------urlparse:" + urlparse)
         res = requests.get(
             "http://localhost:8082/presedocument?url=" + response.url)
         dict = res.json()
@@ -40,5 +43,5 @@ class KejijieSpider(CrawlSpider):
         item["title"] = dict["title"]
         item["content"] = dict["content"]
         item["url"] = response.url
-        print("---------title===" + dict["title"] +"======")
+        info("---------title===" + dict["title"] + "======")
         return item

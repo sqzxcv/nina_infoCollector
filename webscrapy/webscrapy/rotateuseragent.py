@@ -1,8 +1,9 @@
 # -*-coding:utf-8-*-
 
-from scrapy import log
+# from scrapy import log
 import yaml
 from redis import StrictRedis
+from logger import info
 
 """避免被ban策略之一：使用useragent池。
 
@@ -10,7 +11,7 @@ from redis import StrictRedis
 """
 
 import random
-from scrapy.contrib.downloadermiddleware.useragent import UserAgentMiddleware
+from scrapy.downloadermiddlewares.useragent import UserAgentMiddleware
 
 LOCAL_CONFIG_YAML = '/etc/hq-proxies.yml'
 with open(LOCAL_CONFIG_YAML, 'r') as f:
@@ -21,11 +22,12 @@ PROXY_SET = LOCAL_CONFIG['PROXY_SET']
 PROXY_PROTECT = LOCAL_CONFIG['PROXY_PROTECT']
 PROXY_REFRESH = LOCAL_CONFIG['PROXY_REFRESH']
 redis_db = StrictRedis(
-    host=LOCAL_CONFIG['REDIS_HOST'], 
-    port=LOCAL_CONFIG['REDIS_PORT'], 
+    host=LOCAL_CONFIG['REDIS_HOST'],
+    port=LOCAL_CONFIG['REDIS_PORT'],
     password=LOCAL_CONFIG['REDIS_PASSWORD'],
     db=LOCAL_CONFIG['REDIS_DB']
 )
+
 
 class RotateUserAgentMiddleware(UserAgentMiddleware):
 
@@ -35,20 +37,20 @@ class RotateUserAgentMiddleware(UserAgentMiddleware):
     def process_request(self, request, spider):
         ua = random.choice(self.user_agent_list)
         if ua:
-            #显示当前使用的useragent
-            print ("********Current UserAgent:" + ua + "************")
-            log.msg('Current UserAgent:'+ua,log.INFO)
+            # 显示当前使用的useragent
+            info("********Current UserAgent:" + ua + "************")
+            info('Current UserAgent:' + ua)
             request.headers.setdefault('User-Agent', ua)
-        
-        proxy = redis_db.srandmember(PROXY_SET)
-        proxy = proxy.decode('utf-8')
-        # proxy = redis_db.sismember(PROXY_SET, prutf-8oxy)
-        print('~~~~~~~~~~~~使用代理[%s]访问[%s]' % (proxy, request.url))
-        request.meta['proxy'] = proxy
 
-    #the default user_agent_list composes chrome,I E,firefox,Mozilla,opera,netscape
-    #for more user agent strings,you can find it in http://www.useragentstring.com/pages/useragentstring.php
-    user_agent_list = [\
+        # proxy = redis_db.srandmember(PROXY_SET)
+        # proxy = proxy.decode('utf-8')
+        # # proxy = redis_db.sismember(PROXY_SET, prutf-8oxy)
+        # print('~~~~~~~~~~~~使用代理[%s]访问[%s]' % (proxy, request.url))
+        # request.meta['proxy'] = proxy
+
+    # the default user_agent_list composes chrome,I E,firefox,Mozilla,opera,netscape
+    # for more user agent strings,you can find it in http://www.useragentstring.com/pages/useragentstring.php
+    user_agent_list = [
         "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 "
         "(KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1",
         "Mozilla/5.0 (X11; CrOS i686 2268.111.0) AppleWebKit/536.11 "
@@ -85,5 +87,4 @@ class RotateUserAgentMiddleware(UserAgentMiddleware):
         "(KHTML, like Gecko) Chrome/19.0.1055.1 Safari/535.24",
         "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/535.24 "
         "(KHTML, like Gecko) Chrome/19.0.1055.1 Safari/535.24"
-       ]
-
+    ]
