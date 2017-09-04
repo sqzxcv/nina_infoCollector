@@ -3,7 +3,10 @@ from scrapy.spiders import CrawlSpider, Rule
 from scrapy.linkextractors.lxmlhtml import LxmlLinkExtractor
 from redis import StrictRedis
 
-from logger import info
+import sys
+print(__file__ + ":")
+print(sys.path)
+from tools.logger import info
 from config import config
 
 

@@ -1,2 +1,2 @@
-from . import webscrapy
-from . import scrapySettings
+from . import items
+from . import spiders

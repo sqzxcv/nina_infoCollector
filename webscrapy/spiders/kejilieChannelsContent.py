@@ -1,16 +1,20 @@
 #!/usr/bin/env python
 # encoding=utf-8
 
+
 import scrapy
 from scrapy.exceptions import CloseSpider
-from webscrapy.webscrapy.items import NewsSpiderItem
-from webscrapy.webscrapy.text2speech import text2speech
+from webscrapy.items import NewsSpiderItem
+# import webscrapy.webscrapy.items.NewsSpiderItem as NewsSpiderItem
+from tools.text2speech import text2speech
 from redis import StrictRedis
 import requests
 from urllib.parse import urlparse
-from logger import info
+from tools.logger import info
 from config import config
 import time
+# import sys
+# sys.path.append("...")
 
 
 class kejilieChannelsContentSpider(scrapy.Spider):

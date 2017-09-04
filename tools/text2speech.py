@@ -4,6 +4,8 @@
 通过 text2speech 将传入的 text 通过百度语音转换成 mp3,然后上传到七牛
 """
 
+import sys
+sys.path.append("..")
 from pydub import AudioSegment
 import time
 import requests
@@ -13,7 +15,7 @@ from qiniu import Auth, put_file, etag, urlsafe_base64_encode
 import qiniu.config
 import os
 import shutil
-from logger import *
+from tools.logger import *
 
 access_token = ""
 expires_date = 0
@@ -52,9 +54,12 @@ def text2speech(text):
             access_token + "&ctp=1&cuid=aaaaaaaaaaaa&tex="
         # silenceAudio = AudioSegment.silent(duration=10000)
         song = None
-        dir = os.getcwd() + "/ttsdata/ttsdata" + \
+        dir = os.getcwd() + "/ttsdata/"
+        if os.path.isdir(dir) is False:
+            os.mkdir(dir)
+        dir = dir + "ttsdata" + \
             str(int(time.time() * 100000000000000)) + "/"
-        if os.path.isdir(dir) == False:
+        if os.path.isdir(dir) is False:
             os.mkdir(dir)
         textfilepath = dir + str(int(time.time()))
         i = 0
@@ -104,14 +109,14 @@ def uploadspeech(localpath):
     access_key = '_D2Iavhr-DRKHHhW0BTT7-liQ2jO-1cC_lqKn0eF'
     secret_key = 'E3QKF99mgA8HAyGF1nMlKWVVaKlIxRpTZvEb1CiO'
     global qiniuAuth
-    if isinstance(qiniuAuth, Auth) == False:
+    if isinstance(qiniuAuth, Auth) is False:
         qiniuAuth = Auth(access_key, secret_key)
     bucket_name = 'pipixia'
     key = "audio_" + str(int(time.time())) + ".mp3"
     uptoken = qiniuAuth.upload_token(bucket_name, key, 700000)
     ret, info = put_file(uptoken, key, localpath)
     global uploadspeechRetryCount
-    if ret == None:
+    if ret is None:
         info(info)
         if uploadspeechRetryCount < 4:
             uploadspeechRetryCount += 1
