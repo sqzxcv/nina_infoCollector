@@ -21,13 +21,13 @@ class KejijieSpider(CrawlSpider):
         db=Redis2Info['db']
     )
     urllist = db.smembers("kejiliechannels")
-    start_urls = []
-    for url in urllist:
-        start_urls.append(url.decode('utf-8'))
+    start_urls = ["https://www.toutiao.com"]
+    # for url in urllist:
+    #     start_urls.append(url.decode('utf-8'))
 
     # start_urls = ['http://www.kejilie.com', "http://www.kejilie.com/channelsubscribe.html"]
     name = 'kejilie'
-    allowed_domains = ['www.kejilie.com']
+    allowed_domains = ['www.toutiao.com']
     rules = (Rule(SgmlLinkExtractor(allow=('http://www.kejilie.com/.*', )),
                   callback='parsepage', follow=True),)
 

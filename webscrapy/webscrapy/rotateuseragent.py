@@ -29,24 +29,25 @@ redis_db = StrictRedis(
 )
 
 
-class RotateUserAgentMiddleware(UserAgentMiddleware):
+class RotateUserAgentMiddleware(object):
 
     def __init__(self, user_agent=''):
         self.user_agent = user_agent
 
     def process_request(self, request, spider):
-        ua = random.choice(self.user_agent_list)
-        if ua:
-            # 显示当前使用的useragent
-            info("********Current UserAgent:" + ua + "************")
-            info('Current UserAgent:' + ua)
-            request.headers.setdefault('User-Agent', ua)
+        # ua = random.choice(self.user_agent_list)
+        # if ua:
+        #     # 显示当前使用的useragent
+        #     info("********Current UserAgent:" + ua + "************")
+        #     info('Current UserAgent:' + ua)
+        #     request.headers.setdefault('User-Agent', ua)
 
-        # proxy = redis_db.srandmember(PROXY_SET)
+        proxy = redis_db.srandmember(PROXY_SET)
         # proxy = proxy.decode('utf-8')
-        # # proxy = redis_db.sismember(PROXY_SET, prutf-8oxy)
-        # print('~~~~~~~~~~~~使用代理[%s]访问[%s]' % (proxy, request.url))
-        # request.meta['proxy'] = proxy
+        proxy = "http://120.52.32.46:80"
+        # proxy = redis_db.sismember(PROXY_SET, prutf-8oxy)
+        print('~~~~~~~~~~~~使用代理[%s]访问[%s]' % (proxy, request.url))
+        request.meta['proxy'] = proxy
 
     # the default user_agent_list composes chrome,I E,firefox,Mozilla,opera,netscape
     # for more user agent strings,you can find it in http://www.useragentstring.com/pages/useragentstring.php

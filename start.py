@@ -1,14 +1,16 @@
 from apscheduler.schedulers.background import BackgroundScheduler
 from logger import info
 from twisted.internet import reactor
-import scrapy
+# import scrapy
 from scrapy.crawler import CrawlerRunner
 from scrapy.utils.log import configure_logging
 from scrapy.settings import Settings
 
-# from webscrapy.webscrapy.spiders.kejilieChannels import kejilieChannels
+from webscrapy.webscrapy.spiders.kejilieChannels import KejijieChannelsSpider
+from webscrapy.webscrapy.spiders.kejilie import KejijieSpider
 from webscrapy.webscrapy.spiders.\
     kejilieChannelsContent import kejilieChannelsContentSpider
+from webscrapy.webscrapy.spiders.TouTiaoSpider import TouTiaoSpider
 from config import config
 
 # config.info
@@ -24,9 +26,14 @@ def fetchContentJob():
     settings = Settings()
     configure_logging(settings)
     settings.set("BOT_NAME", 'webscrapy')
-    settings.set("ROBOTSTXT_OBEY", True)
-    settings.set("DOWNLOAD_DELAY", 3)
+    # settings.set("ROBOTSTXT_OBEY", True)
+    # settings.set("DOWNLOAD_DELAY", 3)
+    settings.set("USER_AGENT", 'Mozilla/5.0 (Windows NT 5.1; rv:5.0) Gecko/20100101 Firefox/5.0')
     if config.isProduction_ENV:
+        settings.set("DOWNLOADER_MIDDLEWARES", {
+            'webscrapy.webscrapy.rotateuseragent.RotateUserAgentMiddleware': 400
+        })
+    else:
         settings.set("DOWNLOADER_MIDDLEWARES", {
             'webscrapy.webscrapy.rotateuseragent.RotateUserAgentMiddleware': 400
         })
@@ -40,9 +47,15 @@ def fetchContentJob():
     #     'webscrapy.webscrapy.pipelines.NewsSpiderPipeline': 300,
     # }}
     runner = CrawlerRunner(settings)
-    d = runner.crawl(kejilieChannelsContentSpider)
+    runner.crawl(kejilieChannelsContentSpider)
+    d = runner.join()
     d.addBoth(lambda _: reactor.stop())
     reactor.run()  # the script will block here until the crawling is finished
+
+    # runner = CrawlerRunner(settings)
+    # d = runner.crawl(kejilieChannelsContentSpider)
+    # d.addBoth(lambda _: reactor.stop())
+    # reactor.run()  # the script will block here until the crawling is finished
 
 
 def fetchChannelsjob():
@@ -56,9 +69,9 @@ def main():
     """
     main
     """
-    scheduler = BackgroundScheduler()
-    scheduler.add_job(fetchContentJob, 'interval', hours=1)
-    scheduler.start()
+    # scheduler = BackgroundScheduler()
+    # scheduler.add_job(fetchContentJob, 'interval', hours=1)
+    # scheduler.start()
     fetchContentJob()
 
 # BlockingScheduler

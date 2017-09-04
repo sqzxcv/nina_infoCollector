@@ -4,3 +4,4 @@
 # your spiders.
 from . import kejilieChannels
 from . import kejilieChannelsContent
+from . import TouTiaoSpider
