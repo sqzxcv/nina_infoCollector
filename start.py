@@ -40,9 +40,9 @@ def main():
     """
     main
     """
-    # scheduler = BackgroundScheduler()
-    # scheduler.add_job(fetchContentJob, 'interval', hours=1)
-    # scheduler.start()
+    scheduler = BackgroundScheduler()
+    scheduler.add_job(fetchContentJob, 'interval', hours=1)
+    scheduler.start()
     fetchContentJob()
 
 # BlockingScheduler
