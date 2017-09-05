@@ -3,7 +3,7 @@
 # from scrapy import log
 import yaml
 from redis import StrictRedis
-from tools.logger import info
+from tools.logger import info, debug
 
 """避免被ban策略之一：使用useragent池。
 
@@ -14,7 +14,7 @@ import random
 from scrapy.downloadermiddlewares.useragent import UserAgentMiddleware
 
 LOCAL_CONFIG_YAML = '/etc/hq-proxies.yml'
-with open(LOCAL_CONFIG_YAML, 'r') as f:
+with open(LOCAL_CONFIG_YAML, 'r', encoding='utf-8') as f:
     LOCAL_CONFIG = yaml.load(f)
 # redis keys
 PROXY_COUNT = LOCAL_CONFIG['PROXY_COUNT']
@@ -38,8 +38,7 @@ class RotateUserAgentMiddleware(UserAgentMiddleware):
         ua = random.choice(self.user_agent_list)
         if ua:
             # 显示当前使用的useragent
-            info("********Current UserAgent:" + ua + "************")
-            info('Current UserAgent:' + ua)
+            debug("********Current UserAgent:" + ua + "************")
             request.headers.setdefault('User-Agent', ua)
 
         # proxy = redis_db.srandmember(PROXY_SET)

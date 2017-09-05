@@ -136,7 +136,7 @@ def login():
     global expires_date
     if expires_date > int(time.time()) and len(access_token) > 0:
         return access_token
-    url = " https://openapi.baidu.com/oauth/2.0/token?grant_type=client_credentials&client_id=6NCOZQHM7f2bGzc9tKemZovU&client_secret=X0uXNGMIUkiockwY8Q16P6B41E3Xc98a&"
+    url = "https://openapi.baidu.com/oauth/2.0/token?grant_type=client_credentials&client_id=6NCOZQHM7f2bGzc9tKemZovU&client_secret=X0uXNGMIUkiockwY8Q16P6B41E3Xc98a&"
     resStr = requests.get(url)
     res = resStr.json()
     try:

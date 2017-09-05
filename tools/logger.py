@@ -35,7 +35,7 @@ dictLogConfig = {
 
     "formatters": {
         "myFormatter": {
-            "format": "[%(levelname)s]  %(asctime)s %(filename)s[%(lineno)s]    %(message)s"
+            "format": "[%(name)s] [%(levelname)s]  %(asctime)s %(filename)s[%(lineno)s]    %(message)s"
         }
     }
 }
@@ -53,7 +53,8 @@ class NinaLogger(object):
 
     def __init__(self):
         logging.config.dictConfig(dictLogConfig)
-        self.logger = logging.getLogger("App")
+        print("$$$$$$$$$$$$*******init NinaLogger******$$$$$$$$$$$$$$$$$")
+        self.logger = logging.getLogger("NINA")
 
 
 debug = NinaLogger.logger.debug
@@ -62,33 +63,3 @@ warning = NinaLogger.logger.warn
 error = NinaLogger.logger.error
 critical = NinaLogger.logger.critical
 
-
-# import logging
-# from logging import *
-# from datetime import *
-
-# logger = logging.getLogger()
-# logger.setLevel(logging.DEBUG)
-
-# handler = logging.FileHandler("reindex_out.log", 'a')
-# fmt = logging.Formatter("[%(levelname)s]%(asctime)s %(filename)s[%(lineno)s] \
-# : %(message)s", "%Y-%m-%d %H:%M:%S")
-# handler.setFormatter(fmt)
-# logger.addHandler(handler)
-
-# debug = logger.debug
-# info = logger.info
-# warning = logger.warn
-# error = logger.error
-# critical = logger.critical
-
-# -*- encoding:utf-8 -*-
-# import logging
-# import logging.config
-
-# def initLogging:
-#     logging.config.fileConfig("./logging.conf")
-
-# # create logger
-# logger_name = "example"
-# logger = logging.getLogger(logger_name)
