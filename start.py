@@ -4,7 +4,7 @@ from scrapy import cmdline
 import logging
 
 from config import config
-from tools.logger import info
+from tools.logger import info, NinaLogger
 
 # config.info
 
@@ -32,6 +32,7 @@ def main():
     # if config.isProduction_ENV:
     #     logging.getLogger("requests").setLevel(logging.WARNING)
     logging.getLogger("requests").setLevel(logging.WARNING)
+    NinaLogger.logger.setLevel(logging.INFO)
     scheduler = BackgroundScheduler()
     scheduler.add_job(fetchContentJob, 'interval', hours=1)
     scheduler.start()

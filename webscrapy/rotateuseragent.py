@@ -3,7 +3,7 @@
 # from scrapy import log
 import yaml
 from redis import StrictRedis
-from tools.logger import info, debug
+from tools.logger import info, debug, NinaLogger
 
 """避免被ban策略之一：使用useragent池。
 
