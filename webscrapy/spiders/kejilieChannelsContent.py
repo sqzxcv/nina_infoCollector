@@ -42,11 +42,11 @@ class kejilieChannelsContentSpider(scrapy.Spider):
         for catalog_str in self.catalogs:
             catalog = json.loads(catalog_str)
             url = catalog['url']
-            # catalog['index'] = 0
+            catalog['index'] = 0
             # idn += 1
             # debug("catalogindex:" + str(idn))
             # if idn > 1:
-                break
+            # break
             yield scrapy.Request(url, callback=self.parseList, meta={'catalog': catalog})
 
     def parseList(self, response):
@@ -61,7 +61,9 @@ class kejilieChannelsContentSpider(scrapy.Spider):
                 ".//span[@class='am_news_time']/time/text()").extract_first()
             if li_time is None:
                 continue
-            debug(li_time + "-------" + config.info["fetchLength"])
+            # debug(li_time + "-------" + config.info["fetchLength"])
+            info(
+                '-----开始抓取类目：{0}-----'.format(response.meta['catalog']['title']))
             fetchLength = self.dealTime(config.info["fetchLength"])
             if self.dealTime(li_time) < fetchLength:
                 url = li_selector.xpath("//h3/a/@href").extract_first()
@@ -74,19 +76,18 @@ class kejilieChannelsContentSpider(scrapy.Spider):
                     yield scrapy.Request(url, callback=self.parseNews, meta={'catalog': response.meta['catalog']})
             else:
                 # 本类目最新内容已经全部获取了
-                debug(
+                info(
                     "-----------------------url[" + response.meta['catalog']['url'] + "] 爬起完成")
                 needPitchNextPage = False
                 break
-        return None
+
         if needPitchNextPage:
             catalog = response.meta['catalog']
             url = catalog['url']
             index = catalog['index'] + 1
             pageurl = url[:-5] + "/" + str(index) + ".html"
             catalog['index'] = index
-            debug(
-                "=========================pith url[" + url + "] index:" + str(index))
+            info("-----pitch pageurl[" + pageurl + "]------")
             yield scrapy.Request(pageurl, callback=self.parseList, meta={'catalog': catalog})
 
     def parseNews(self, response):
@@ -98,8 +99,7 @@ class kejilieChannelsContentSpider(scrapy.Spider):
         if self.createtimer + config.info["scrapyDuration"] < CTimer.time():
             raise CloseSpider("spider time out")  # time out 发送异常 关闭爬虫
             return None
-        info("-----------------page url:" + response.url)
-        info("````````````````" + config.info['parsedocument'] + response.url)
+        # info("-----------------page url:" + response.url)
         res = requests.get(
             config.info['parsedocument'] + response.url)
         articles = response.xpath("//article")
@@ -112,7 +112,7 @@ class kejilieChannelsContentSpider(scrapy.Spider):
                 ".//div[@class='am_list_author']/span[@class='am_news_time']/time[@title]/@title").extract_first()
             thumbnail = articles[0].xpath(
                 './/div[@class="so-content"]//img/@src').extract_first()
-            info('title:' + title + '------- time:' + datatime + "-------")
+            # info('title:' + title + '------- time:' + datatime + "-------")
             # content = response.xpath('//div[@class="so-content"]//p/text()').extract()
             tags = articles[0].xpath(
                 './/div[@class="so-content"]/a[@target="_blank"]/span/text()').extract()

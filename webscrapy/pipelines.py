@@ -49,32 +49,32 @@ class NewsSpiderPipeline(object):
                            user=self.mysql["user"], passwd=self.mysql["pwd"],
                            db=self.mysql["db"], charset='utf8')
         cursor = conn.cursor()
+        sql = ""
         try:
-            longStr = "insert into kejilie_raw_data(source, thumbnail, tags,url,content,news_time,contentHtml,title,collect_time) values('$source', '$thumbnail', '$tags','$url','$content',$news_time,'$contentHtml','$title',$collect_time) ON DUPLICATE KEY UPDATE content= '$content', news_time=$news_time,contentHtml='$contentHtml',title='$title',collect_time=$collect_time, source='$source', thumbnail='$thumbnail', tags='$tags'"
+            longStr = "insert into kejilie_raw_data(source, thumbnail, tags,url,content,news_time,contentHtml,title,collect_time) values($source, $thumbnail, $tags,$url,$content,$news_time,$contentHtml,$title,$collect_time) ON DUPLICATE KEY UPDATE content= $content, news_time=$news_time,contentHtml=$contentHtml,title=$title,collect_time=$collect_time, source=$source, thumbnail=$thumbnail, tags=$tags"
             sqltemp = Template(longStr)
-            sql = sqltemp.substitute(title=item["title"],
-                                     url=item["url"],
-                                     content=item["content"],
-                                     contentHtml=item["content"],
+            sql = sqltemp.substitute(title=conn.escape(item["title"]),
+                                     url=conn.escape(item["url"]),
+                                     content=conn.escape(item["content"]),
+                                     contentHtml=conn.escape(item["content"]),
                                      news_time=self.convertTimeFromString(
                                          item["time"]),
                                      collect_time=int(time.time()),
-                                     source=item['source'], thumbnail=item['thumbnail'], tags=item['tags'])
-            # info("-------------sql:"+ sql);
+                                     source=conn.escape(item['source']), thumbnail=conn.escape(item['thumbnail']), tags=conn.escape(item['tags']))
             cursor.execute(sql)
             dataid = int(conn.insert_id())
-            info("插入新闻:{0}--id:{1}".format(item['title'], dataid))
+            info("插入新闻:{0}--[{1}]--{2}".format(item['time'], dataid,item['title']))
             conn.commit()
-            longStr = "insert ignore into catalogs(name, logo) values('$name', '$logo')"
+            longStr = "insert ignore into catalogs(name, logo) values($name, $logo)"
             sqltemp = Template(longStr)
             sql = sqltemp.substitute(
-                name=item['catalog']['title'], logo=item['catalog']['logo'])
+                name=conn.escape(item['catalog']['title']), logo=conn.escape(item['catalog']['logo']))
             cursor.execute(sql)
             catalogid = int(conn.insert_id())
-            debug("插入类目：「{0}」，id：「{1}」".format(item['catalog']['title'], item['catalog']['logo']))
+            # debug("插入类目：「{0}」，id：「{1}」".format(item['catalog']['title'], item['catalog']['logo']))
             conn.commit()
             
-            longStr = "insert ignore into catalogmap(sourceid, catalogid) values('$sourceid', '$catalogid')"
+            longStr = "insert ignore into catalogmap(sourceid, catalogid) values($sourceid, $catalogid)"
             sqltemp = Template(longStr)
             sql = sqltemp.substitute(
                 sourceid=dataid, catalogid=catalogid)
@@ -83,6 +83,7 @@ class NewsSpiderPipeline(object):
 
         except:
             import traceback
+            info("-------------sql:"+ sql);
             traceback.print_exc()
             conn.rollback()
         finally:
