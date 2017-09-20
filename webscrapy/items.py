@@ -15,7 +15,7 @@ class NewsSpiderItem(scrapy.Item):
     time = scrapy.Field()
     content = scrapy.Field()
     url = scrapy.Field()
-    audio = scrapy.Field()
+    # audio = scrapy.Field()
     html = scrapy.Field()
     thumbnail = scrapy.Field()
     tags = scrapy.Field()

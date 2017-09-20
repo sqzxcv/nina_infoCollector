@@ -11,7 +11,7 @@ import requests
 from urllib.parse import urlparse
 from tools.logger import info, debug
 from config import config
-import time
+import time as CTimer
 import re
 import json
 
@@ -19,7 +19,7 @@ import json
 class kejilieChannelsContentSpider(scrapy.Spider):
 
     name = "kejilieChannelsContent"
-    createtimer = time.time()
+    createtimer = CTimer.time()
     Redis2Info = config.info["Redis2Info"]
     db = StrictRedis(
         host=Redis2Info['host'],
@@ -33,45 +33,61 @@ class kejilieChannelsContentSpider(scrapy.Spider):
     start_urls = ['http://www.kejilie.com']
     channelsUrls = []
     allowed_domains = ['www.kejilie.com']
-    didPitchOutUrlArray = []
 
     def parse(self, response):
         """
         提取文章类目
         """
-        self.didPitchOutUrlArray = [] #开始新的爬起流程，记录清空
+        # idn = 0
         for catalog_str in self.catalogs:
             catalog = json.loads(catalog_str)
             url = catalog['url']
-            index = 0
-            while True:
-                if url not in self.didPitchOutUrlArray:
-                    pageurl = url[:-5] + "/" + str(index) + ".html"
-                    index = index + 1
-                    debug("pith url[" + url +"] index:" + str(index -1))
-                    yield scrapy.Request(pageurl, callback=self.parseList, meta={'catalog': catalog})
-                else:
-                    info("-----url" + url + " did pitch out------")
-                    break
+            # catalog['index'] = 0
+            # idn += 1
+            # debug("catalogindex:" + str(idn))
+            # if idn > 1:
+                break
+            yield scrapy.Request(url, callback=self.parseList, meta={'catalog': catalog})
 
     def parseList(self, response):
         """
         获取文中 URL 链接，提取文章列表页面
         """
+        # debug("_____________url:" + response.url)
+        needPitchNextPage = True
         li_items = response.xpath("//ul[@class='am-list']/li")
         for li_selector in li_items:
             li_time = li_selector.xpath(
                 ".//span[@class='am_news_time']/time/text()").extract_first()
+            if li_time is None:
+                continue
+            debug(li_time + "-------" + config.info["fetchLength"])
             fetchLength = self.dealTime(config.info["fetchLength"])
-            if False:  # self.dealTime(li_time) < fetchLength:
-                url = li_selector.xpath(
-                    ".//h3[@class='am_list_title']/a/@href").extract()
+            if self.dealTime(li_time) < fetchLength:
+                url = li_selector.xpath("//h3/a/@href").extract_first()
+                if url is None:
+                    info("2``````````````url" + response.url)
+                    info("index:" + li_items.index(li_selector))
+                    info("1``````````````url is None")
+                parse = urlparse(url)
                 if 'http' == parse.scheme and parse.netloc in self.allowed_domains:
                     yield scrapy.Request(url, callback=self.parseNews, meta={'catalog': response.meta['catalog']})
             else:
-                info("-----record url" + response.meta['catalog']['url'] + " finished------")
-                self.didPitchOutUrlArray.append(response.meta['catalog']['url'])
+                # 本类目最新内容已经全部获取了
+                debug(
+                    "-----------------------url[" + response.meta['catalog']['url'] + "] 爬起完成")
+                needPitchNextPage = False
                 break
+        return None
+        if needPitchNextPage:
+            catalog = response.meta['catalog']
+            url = catalog['url']
+            index = catalog['index'] + 1
+            pageurl = url[:-5] + "/" + str(index) + ".html"
+            catalog['index'] = index
+            debug(
+                "=========================pith url[" + url + "] index:" + str(index))
+            yield scrapy.Request(pageurl, callback=self.parseList, meta={'catalog': catalog})
 
     def parseNews(self, response):
         """
@@ -79,64 +95,65 @@ class kejilieChannelsContentSpider(scrapy.Spider):
         """
         # title =
         # info("test")
-        return ''
-        if self.createtimer + config.info["scrapyDuration"] < time.time():
+        if self.createtimer + config.info["scrapyDuration"] < CTimer.time():
             raise CloseSpider("spider time out")  # time out 发送异常 关闭爬虫
             return None
         info("-----------------page url:" + response.url)
+        info("````````````````" + config.info['parsedocument'] + response.url)
         res = requests.get(
             config.info['parsedocument'] + response.url)
         articles = response.xpath("//article")
         if len(articles) != 0:
             title = articles[0].xpath(
-                ".//article//h1[@class='article_nr_title']/text()").extract_first()
+                ".//h1[@class='article_nr_title']/text()").extract_first()
             source = articles[0].xpath(
-                ".//article//div[@class='am_list_author']/a/span[@class='name']/text()").extract_first()
-            time = articles[0].xpath(
-                ".//article//div[@class='am_list_author']/span[@class='am_news_time']/time[@title]/@title").extract_first()
+                ".//div[@class='am_list_author']/a/span[@class='name']/text()").extract_first()
+            datatime = articles[0].xpath(
+                ".//div[@class='am_list_author']/span[@class='am_news_time']/time[@title]/@title").extract_first()
             thumbnail = articles[0].xpath(
                 './/div[@class="so-content"]//img/@src').extract_first()
-            info('title:' + title + '------- time:' + time + "-------")
+            info('title:' + title + '------- time:' + datatime + "-------")
             # content = response.xpath('//div[@class="so-content"]//p/text()').extract()
             tags = articles[0].xpath(
                 './/div[@class="so-content"]/a[@target="_blank"]/span/text()').extract()
             dict = res.json()
             item = NewsSpiderItem()
-            item["time"] = time
+            item["time"] = datatime
             item["title"] = title
             item["content"] = dict["content"]
             item["url"] = response.url
-            item.html = dict.contentHtml
-            item.source = source
-            item.thumbnail = thumbnail
-            item.tags = json.dumps(tags)
+            item["html"] = dict["contentHtml"]
+            item["source"] = source
+            item['thumbnail'] = thumbnail
+            item['tags'] = json.dumps(tags)
+            item['catalog'] = response.meta['catalog']
             return item
         else:
-            return ""
+            return None
 
     def dealTime(self, time_str):
         """
         """
-        nums = re.findall(r'\d+', time_str)
+        nums = re.findall(r'\d+', "".join(time_str.split()))
         if len(nums) == 0:
             return 0
         num = nums[0]
         # 毫秒
         pics = time_str[len(num):]
         oneLens = 0
-        if pics is "分钟前":
+        if pics == "分钟前":
             oneLens = 1000 * 60
-        elif pics is "小时前":
+        elif pics == "小时前":
             oneLens = 1000 * 60 * 60
-        elif pics is "天前":
+        elif pics == "天前":
             oneLens = 1000 * 60 * 60 * 24
-        elif pics is "周前":
+        elif pics == "周前":
             oneLens = 1000 * 60 * 60 * 24 * 7
-        elif pics is "月前":
+        elif pics == "月前":
             oneLens = 1000 * 60 * 60 * 24 * 30
-        elif pics is "年前":
+        elif pics == "年前":
             oneLens = 1000 * 60 * 60 * 24 * 365
-        elif pics is "刚刚":
+        elif pics == "刚刚":
             oneLens = 1000
 
-        return num * oneLens
+        return int(num) * oneLens

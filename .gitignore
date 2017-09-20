@@ -14,3 +14,4 @@ logs/
 dbs/*
 build/lib/
 build
+*/.DS_Store

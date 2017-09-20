@@ -14,5 +14,4 @@ class develop(object):
         default config
         """
         return {
-            "parsedocument": "http://localhost:8082/presedocument?url="
         }
