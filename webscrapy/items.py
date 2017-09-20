@@ -7,16 +7,23 @@
 
 import scrapy
 
+
 class NewsSpiderItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
-	title = scrapy.Field()
-	time = scrapy.Field()
-	content = scrapy.Field()
-	url = scrapy.Field()
-	audio = scrapy.Field()
+    title = scrapy.Field()
+    time = scrapy.Field()
+    content = scrapy.Field()
+    url = scrapy.Field()
+    audio = scrapy.Field()
+    html = scrapy.Field()
+    thumbnail = scrapy.Field()
+    tags = scrapy.Field()
+    source = scrapy.Field()
+    catalog = scrapy.Field()
+
 
 class TitleSpiderItem(scrapy.Item):
-	title = scrapy.Field()
-	time = scrapy.Field()
-	url = scrapy.Field()
+    title = scrapy.Field()
+    time = scrapy.Field()
+    url = scrapy.Field()

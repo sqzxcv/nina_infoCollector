@@ -16,7 +16,7 @@ class production(object):
         return {
             "parsedocument": "http://localhost:3082/presedocument?url=",
             "scrapyDuration": 40 * 60,
-            "fetchLength": 1,
+            "fetchLength": "1月前",  #提取 最近一个月的消息
             "mysql": {
                 "host": "localhost",
                 "port": 3306,

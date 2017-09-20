@@ -38,7 +38,7 @@ class RotateUserAgentMiddleware(UserAgentMiddleware):
         ua = random.choice(self.user_agent_list)
         if ua:
             # 显示当前使用的useragent
-            debug("********Current UserAgent:" + ua + "************")
+            # debug("********Current UserAgent:" + ua + "************")
             request.headers.setdefault('User-Agent', ua)
 
         # proxy = redis_db.srandmember(PROXY_SET)

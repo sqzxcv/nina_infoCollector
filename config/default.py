@@ -14,9 +14,10 @@ class default(object):
         default config
         """
         return {
-            "parsedocument": "http://localhost:8082/presedocument?url=",
+            # "parsedocument": "http://localhost:8082/presedocument?url=",
+            "parsedocument": "http://116.62.195.14:1082/presedocument?url=",
             "scrapyDuration": 10 * 60,  # 爬虫运行多长时间后自动退出
-            "fetchLength": 1,
+            "fetchLength": "1月前",  # 提取 最近一个月的消息
             "Redis2Info": {
                 "host": '127.0.0.1',
                 "port": 6379,

@@ -7,7 +7,7 @@
             "request": "launch",
             "stopOnEntry": true,
             "pythonPath": "${config:python.pythonPath}",
-            "program": "/usr/local/bin/scrapy_python3",
+            "program": "/Users/xiajun/Envs/scrapyd_py3.6.1/bin/scrapy",
             // "program": "~/Envs/nina_scrapywithPython3/bin/scrapy",
             "cwd": "${workspaceRoot}/webscrapy",
             "args": [
