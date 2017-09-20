@@ -53,7 +53,7 @@ class kejilieChannelsContentSpider(scrapy.Spider):
         """
         获取文中 URL 链接，提取文章列表页面
         """
-        # debug("_____________url:" + response.url)
+        info('-----开始抓取类目：{0}-----'.format(response.meta['catalog']['title']))
         needPitchNextPage = True
         li_items = response.xpath("//ul[@class='am-list']/li")
         for li_selector in li_items:
@@ -62,8 +62,6 @@ class kejilieChannelsContentSpider(scrapy.Spider):
             if li_time is None:
                 continue
             # debug(li_time + "-------" + config.info["fetchLength"])
-            info(
-                '-----开始抓取类目：{0}-----'.format(response.meta['catalog']['title']))
             fetchLength = self.dealTime(config.info["fetchLength"])
             if self.dealTime(li_time) < fetchLength:
                 url = li_selector.xpath("//h3/a/@href").extract_first()
