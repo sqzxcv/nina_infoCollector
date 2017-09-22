@@ -30,4 +30,4 @@ cat = json.loads(init_db_content)
 
 aset = set()
 for c in cat:
-    redis_db.sadd("kejiliechannels", json.dumps(c))
+    redis_db.sadd("kejiliechannels", c)
