@@ -13,20 +13,21 @@ from tools.logger import info, debug, NinaLogger
 import random
 from scrapy.downloadermiddlewares.useragent import UserAgentMiddleware
 
-LOCAL_CONFIG_YAML = '/etc/hq-proxies.yml'
-with open(LOCAL_CONFIG_YAML, 'r', encoding='utf-8') as f:
-    LOCAL_CONFIG = yaml.load(f)
-# redis keys
-PROXY_COUNT = LOCAL_CONFIG['PROXY_COUNT']
-PROXY_SET = LOCAL_CONFIG['PROXY_SET']
-PROXY_PROTECT = LOCAL_CONFIG['PROXY_PROTECT']
-PROXY_REFRESH = LOCAL_CONFIG['PROXY_REFRESH']
-redis_db = StrictRedis(
-    host=LOCAL_CONFIG['REDIS_HOST'],
-    port=LOCAL_CONFIG['REDIS_PORT'],
-    password=LOCAL_CONFIG['REDIS_PASSWORD'],
-    db=LOCAL_CONFIG['REDIS_DB']
-)
+# 本地代理
+# LOCAL_CONFIG_YAML = '/etc/hq-proxies.yml'
+# with open(LOCAL_CONFIG_YAML, 'r', encoding='utf-8') as f:
+#     LOCAL_CONFIG = yaml.load(f)
+# # redis keys
+# PROXY_COUNT = LOCAL_CONFIG['PROXY_COUNT']
+# PROXY_SET = LOCAL_CONFIG['PROXY_SET']
+# PROXY_PROTECT = LOCAL_CONFIG['PROXY_PROTECT']
+# PROXY_REFRESH = LOCAL_CONFIG['PROXY_REFRESH']
+# redis_db = StrictRedis(
+#     host=LOCAL_CONFIG['REDIS_HOST'],
+#     port=LOCAL_CONFIG['REDIS_PORT'],
+#     password=LOCAL_CONFIG['REDIS_PASSWORD'],
+#     db=LOCAL_CONFIG['REDIS_DB']
+# )
 
 
 class RotateUserAgentMiddleware(UserAgentMiddleware):
