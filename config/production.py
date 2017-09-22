@@ -16,7 +16,7 @@ class production(object):
         return {
             "parsedocument": "http://116.62.195.14:1082/presedocument?url=",
             "scrapyDuration": 40 * 60,
-            "fetchLength": "7天前",  #提取 最近一个月的消息
+            "fetchLength": "2小时前",  #提取 最近一个月的消息
             "mysql": {
                 "host": "123.207.79.244",
                 "port": 3310,
