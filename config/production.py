@@ -18,7 +18,7 @@ class production(object):
             "scrapyDuration": 40 * 60,
             "fetchLength": "7天前",  #提取 最近一个月的消息
             "mysql": {
-                "host": "47.52.88.82",
+                "host": "123.207.79.244",
                 "port": 3310,
                 "user": "root",
                 "pwd": "Anhuiqiang85!",

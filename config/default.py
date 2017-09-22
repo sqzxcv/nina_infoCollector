@@ -30,7 +30,7 @@ class default(object):
                 # "user": "root",
                 # "pwd": "Anhuiqiang851",
                 # "host": "116.62.195.14",
-                "host": "47.52.88.82",
+                "host": "123.207.79.244",
                 "port": 3310,
                 "user": "admin",
                 "pwd": "Anhuiqiang85!",
