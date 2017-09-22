@@ -14,12 +14,12 @@ class production(object):
         production config
         """
         return {
-            "parsedocument": "http://localhost:3082/presedocument?url=",
+            "parsedocument": "http://116.62.195.14:1082/presedocument?url=",
             "scrapyDuration": 40 * 60,
-            "fetchLength": "1月前",  #提取 最近一个月的消息
+            "fetchLength": "7天前",  #提取 最近一个月的消息
             "mysql": {
-                "host": "localhost",
-                "port": 3306,
+                "host": "47.52.88.82"
+                "port": 3310,
                 "user": "root",
                 "pwd": "Anhuiqiang85!",
                 "db": "Nina",
