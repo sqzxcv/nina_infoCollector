@@ -46,7 +46,7 @@ class kejilieChannelsContentSpider(scrapy.Spider):
             # idn += 1
             # debug("catalogindex:" + str(idn))
             # if idn > 1:
-            # break
+            #     break
             yield scrapy.Request(url, callback=self.parseList, meta={'catalog': catalog})
 
     def parseList(self, response):
@@ -132,7 +132,8 @@ class kejilieChannelsContentSpider(scrapy.Spider):
     def dealTime(self, time_str):
         """
         """
-        nums = re.findall(r'\d+', "".join(time_str.split()))
+        time_str = "".join(time_str.split())
+        nums = re.findall(r'\d+', time_str)
         if len(nums) == 0:
             return 0
         num = nums[0]
