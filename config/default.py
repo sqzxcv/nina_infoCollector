@@ -33,7 +33,7 @@ class default(object):
                 "host": "123.207.79.244",
                 "port": 3310,
                 "user": "admin",
-                "pwd": "Anhuiqiang85!",
+                "pwd": "Anhuiqiang851",
                 "db": "Nina",
             }
         }
