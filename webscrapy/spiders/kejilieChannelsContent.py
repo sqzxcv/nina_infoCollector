@@ -86,7 +86,7 @@ class kejilieChannelsContentSpider(scrapy.Spider):
                 needPitchNextPage = False
                 break
 
-        if needPitchNextPage && (self.createtimer + config.info["scrapyDuration"]) > CTimer.time():
+        if needPitchNextPage and (self.createtimer + config.info["scrapyDuration"]) > CTimer.time():
             url = catalog['url']
             index = catalog['index'] + 1
             pageurl = url[:-5] + "/" + str(index) + ".html"
