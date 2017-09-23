@@ -61,7 +61,7 @@ class kejilieChannelsContentSpider(scrapy.Spider):
             needPitchNextPage == False
             if catalog['index'] == 0:
                 del catalog['index']
-                self.db.srem(catalog)
+                self.db.srem(json.dumps(catalog))
             return None
         for li_selector in li_items:
             li_time = li_selector.xpath(
