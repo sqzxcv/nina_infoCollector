@@ -56,6 +56,13 @@ class kejilieChannelsContentSpider(scrapy.Spider):
         info('-----开始抓取类目：{0}-----'.format(response.meta['catalog']['title']))
         needPitchNextPage = True
         li_items = response.xpath("//ul[@class='am-list']/li")
+        catalog = response.meta['catalog']
+        if len(li_items) == 0:
+            needPitchNextPage == False
+            if catalog['index'] == 0:
+                del catalog['index']
+                self.db.srem(catalog)
+            return None
         for li_selector in li_items:
             li_time = li_selector.xpath(
                 ".//span[@class='am_news_time']/time/text()").extract_first()
@@ -75,18 +82,19 @@ class kejilieChannelsContentSpider(scrapy.Spider):
             else:
                 # 本类目最新内容已经全部获取了
                 info(
-                    "-----------------------url[" + response.meta['catalog']['url'] + "] 爬起完成")
+                    "-----------------------url[" + response.meta['catalog']['url'] + "] 爬虫完成")
                 needPitchNextPage = False
                 break
 
-        if needPitchNextPage:
-            catalog = response.meta['catalog']
+        if needPitchNextPage && (self.createtimer + config.info["scrapyDuration"]) > CTimer.time():
             url = catalog['url']
             index = catalog['index'] + 1
             pageurl = url[:-5] + "/" + str(index) + ".html"
             catalog['index'] = index
             info("-----pitch pageurl[" + pageurl + "]------")
             yield scrapy.Request(pageurl, callback=self.parseList, meta={'catalog': catalog})
+        else:
+            return None
 
     def parseNews(self, response):
         """
